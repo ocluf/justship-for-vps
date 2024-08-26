@@ -129,6 +129,10 @@ module.exports = {
 
 	console.log('Setup complete!');
 	rl.close();
+
+	// Remove the script itself
+	fs.unlinkSync(__filename);
+	console.log('Removed setup script.');
 }
 
 setupProject();
