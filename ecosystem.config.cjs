@@ -13,7 +13,7 @@ module.exports = {
 			ref: 'origin/main',
 			repo: 'https://github.com/ocluf/justship-for-vps.git',
 			path: '/root/projects/test',
-			'post-deploy': 'pnpm install && pm2 reload ecosystem.config.js --env production'
+			'post-deploy': 'pnpm install && pm2 reload ecosystem.config.cjs --env production'
 		}
 	}
 };
