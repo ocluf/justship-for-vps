@@ -50,39 +50,51 @@ async function setupProject() {
 		];
 
 		// Remove the entire src/routes/(login) directory
-		const loginDirPath = path.join(process.cwd(), 'src', 'routes', '(login)');
+		const loginDirPath = path.join(__dirname, 'src', 'routes', '(login)');
 		if (fs.existsSync(loginDirPath)) {
 			fs.rmSync(loginDirPath, { recursive: true, force: true });
 			console.log('Removed: src/routes/(login) directory');
+		}
+
+		// Remove content of src/lib/server/database/schema.ts
+		const schemaPath = path.join(__dirname, 'src', 'lib', 'server', 'database', 'schema.ts');
+		if (fs.existsSync(schemaPath)) {
+			fs.writeFileSync(schemaPath, '// Database schema file');
+			console.log('Cleared content of: src/lib/server/database/schema.ts');
 		}
 
 		// Add src/routes/(login) to the list of files to remove
 		authFilesToRemove.push('src/routes/(login)');
 
 		authFilesToRemove.forEach((file) => {
-			const filePath = path.join(process.cwd(), file);
+			const filePath = path.join(__dirname, file);
 			if (fs.existsSync(filePath)) {
 				fs.unlinkSync(filePath);
 				console.log(`Removed: ${file}`);
 			}
 		});
 
-		// Adapt NavMenu.tsx to remove auth-related components
-		const navMenuPath = path.join(process.cwd(), 'components/NavMenu.tsx');
-		if (fs.existsSync(navMenuPath)) {
-			let navMenuContent = fs.readFileSync(navMenuPath, 'utf8');
-			navMenuContent = navMenuContent.replace(/import.*SignInButton.*\n/, '');
-			navMenuContent = navMenuContent.replace(/import.*SignOutButton.*\n/, '');
-			navMenuContent = navMenuContent.replace(/<SignInButton.*\/>\n/, '');
-			navMenuContent = navMenuContent.replace(/<SignOutButton.*\/>\n/, '');
-			fs.writeFileSync(navMenuPath, navMenuContent);
-			console.log('Adapted: components/NavMenu.tsx');
+		// Remove authentication-related variables from .env.example
+		const envExamplePath = path.join(__dirname, '.env.example');
+		if (fs.existsSync(envExamplePath)) {
+			let envContent = fs.readFileSync(envExamplePath, 'utf8');
+			envContent = envContent.replace(/^SIGNIN_IP_RATELIMIT=.*\n?/m, '');
+			envContent = envContent.replace(/^GOOGLE_CLIENT_ID=.*\n?/m, '');
+			envContent = envContent.replace(/^GOOGLE_CLIENT_SECRET=.*\n?/m, '');
+			fs.writeFileSync(envExamplePath, envContent);
+			console.log('Removed authentication-related variables from .env.example');
 		}
 	}
-
 	if (addPayments === 'yes' || addPayments === 'y') {
 		console.log('Setting up payments...');
 		// Add payments setup logic here
+	} else {
+		console.log('Removing payment-related files...');
+		const stripeDirPath = path.join(__dirname, 'src', 'routes', 'stripe');
+		if (fs.existsSync(stripeDirPath)) {
+			fs.rmSync(stripeDirPath, { recursive: true, force: true });
+			console.log('Removed: src/routes/stripe directory');
+		}
 	}
 
 	if (hostingChoice === 'vercel') {
@@ -102,7 +114,7 @@ module.exports = {
   node_args: '--env-file=.env'
 };
 `;
-		fs.writeFileSync(path.join(process.cwd(), 'ecosystem.config.js'), ecosystemConfig);
+		fs.writeFileSync(path.join(__dirname, 'ecosystem.config.js'), ecosystemConfig);
 	}
 
 	console.log('Setup complete!');
