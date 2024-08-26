@@ -26,13 +26,10 @@ async function setupProject() {
 	console.log('Welcome to the project setup script!');
 
 	// Authentication choice
-	const addAuth = await askQuestion('Do you want to add authentication? (yes/no): ');
+	const addAuth = await askQuestion('Do you want to authentication with lucia? (yes/no): ');
 
 	// Payments choice
-	const addPayments = await askQuestion('Do you want to add payments? (yes/no): ');
-
-	// Hosting choice
-	const hostingChoice = await askQuestion('Where do you want to host? (vercel/vps): ');
+	const addPayments = await askQuestion('Do you want payments with stripe? (yes/no): ');
 
 	// Process choices
 	if (addAuth === 'yes' || addAuth === 'y') {
@@ -105,31 +102,6 @@ async function setupProject() {
 			fs.writeFileSync(envExamplePath, envContent);
 			console.log('Removed payment-related variables from .env.example');
 		}
-	}
-	if (hostingChoice === 'vercel') {
-		console.log('Setting up for Vercel hosting...');
-		// Add Vercel-specific setup here
-	} else if (hostingChoice === 'vps') {
-		console.log('Setting up for VPS hosting with PM2...');
-		// Remove vercel.json
-		const vercelJsonPath = path.join(__dirname, 'vercel.json');
-		if (fs.existsSync(vercelJsonPath)) {
-			fs.unlinkSync(vercelJsonPath);
-			console.log('Removed: vercel.json');
-		}
-		// Add VPS with PM2 setup here
-		const ecosystemConfig = `
-module.exports = {
-  apps: [
-    {
-      name: 'just-ship-for-vps',
-      script: './build/index.js'
-    }
-  ],
-  node_args: '--env-file=.env'
-};
-`;
-		fs.writeFileSync(path.join(__dirname, 'ecosystem.config.js'), ecosystemConfig);
 	}
 
 	console.log('Setup complete!');
