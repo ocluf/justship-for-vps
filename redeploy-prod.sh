@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "Redeploying to production...0"
+git pull
+npm run build 
