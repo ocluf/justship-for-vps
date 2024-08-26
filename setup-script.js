@@ -95,6 +95,16 @@ async function setupProject() {
 			fs.rmSync(stripeDirPath, { recursive: true, force: true });
 			console.log('Removed: src/routes/stripe directory');
 		}
+
+		// Remove payment-related variables from .env.example
+		const envExamplePath = path.join(__dirname, '.env.example');
+		if (fs.existsSync(envExamplePath)) {
+			let envContent = fs.readFileSync(envExamplePath, 'utf8');
+			envContent = envContent.replace(/^STRIPE_SECRET_KEY=.*\n?/m, '');
+			envContent = envContent.replace(/^STRIPE_WEBHOOK_SECRET=.*\n?/m, '');
+			fs.writeFileSync(envExamplePath, envContent);
+			console.log('Removed payment-related variables from .env.example');
+		}
 	}
 
 	if (hostingChoice === 'vercel') {
