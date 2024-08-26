@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "Redeploying to production...1"
+echo "Redeploying to production...0"
