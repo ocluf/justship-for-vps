@@ -106,12 +106,17 @@ async function setupProject() {
 			console.log('Removed payment-related variables from .env.example');
 		}
 	}
-
 	if (hostingChoice === 'vercel') {
 		console.log('Setting up for Vercel hosting...');
 		// Add Vercel-specific setup here
 	} else if (hostingChoice === 'vps') {
 		console.log('Setting up for VPS hosting with PM2...');
+		// Remove vercel.json
+		const vercelJsonPath = path.join(__dirname, 'vercel.json');
+		if (fs.existsSync(vercelJsonPath)) {
+			fs.unlinkSync(vercelJsonPath);
+			console.log('Removed: vercel.json');
+		}
 		// Add VPS with PM2 setup here
 		const ecosystemConfig = `
 module.exports = {
